@@ -13,7 +13,8 @@ class Descriptor:
 
     @staticmethod
     def get_threshold(descriptor_length):
-        return descriptor_length * 0.375
+        # return descriptor_length * 0.375
+        return descriptor_length * 0.5
 
     def mark_closest_descriptors(self, descriptors_list):
         threshold = self.get_threshold(len(self.descriptor))

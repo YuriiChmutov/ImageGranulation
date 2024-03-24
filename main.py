@@ -42,7 +42,7 @@ def convert_32_descriptors_to_256_bit(descriptors):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    img = cv2.imread('images/ManchesterCity.jpg')
+    img = cv2.imread('images/Liverpool.jpg')
 
     cv2.imshow("Lion_simple", img)
     # cv2.waitKey(0)
@@ -78,6 +78,22 @@ if __name__ == '__main__':
     marked_indexes = [descriptor.index for descriptor in descriptors_list if descriptor.marked]
     print("Collection of marked indexes:", marked_indexes)
 
+    ################################
+
+    print('-------------------------------------------')
+
+    unmarked_descriptors = [descriptor for descriptor in descriptors_list if not descriptor.marked]
+
+    print(f'Unmarked descriptors len: {len(unmarked_descriptors)}')
+
+    for descriptor in unmarked_descriptors:
+        descriptor.mark_closest_descriptors(unmarked_descriptors)
+
+    marked_count = sum(1 for descriptor in unmarked_descriptors if descriptor.marked)
+    print("Number of marked descriptors:", marked_count)
+
+    marked_indexes = [descriptor.index for descriptor in unmarked_descriptors if descriptor.marked]
+    print("Collection of marked indexes:", marked_indexes)
 
     # print('-------------')
 
