@@ -40,65 +40,143 @@ def convert_32_descriptors_to_256_bit(descriptors):
     return result_matrix
 
 
+def process_image(image_path, class_name, descriptors_amount=20):
+    img = cv2.imread(image_path)
+    orb = cv2.ORB_create(nfeatures=descriptors_amount)
+    keypoints, descriptors = orb.detectAndCompute(img, None)
+    descriptors_bit_format = convert_32_descriptors_to_256_bit(descriptors)
+    descriptors_list = [Descriptor(descriptor, False, index, class_name) for index, descriptor in enumerate(descriptors_bit_format)]
+    return descriptors_list
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    img = cv2.imread('images/Liverpool.jpg')
 
-    cv2.imshow("Lion_simple", img)
+    image_data = [
+        ('images/Liverpool.jpg', 'A'),
+        ('images/Leicester.jpg', 'B'),
+        ('images/BayernMunchen.jpg', 'C'),
+        ('images/Eintracht.jpg', 'D'),
+        ('images/Brentford.jpg', 'E')
+    ]
+
+    # img_A = cv2.imread('images/Liverpool.jpg')
+    # img_B = cv2.imread('images/Leicester.jpg')
+    # img_C = cv2.imread('images/BayernMunchen.jpg')
+    # img_D = cv2.imread('images/Eintracht.jpg')
+    # img_E = cv2.imread('images/Brentford.jpg')
+    # img_F = cv2.imread('images/ManchesterCity.jpg')
+
+    # cv2.imshow("Lion_simple", img)
     # cv2.waitKey(0)
 
-    descriptors_amount = 500
-    orb = cv2.ORB_create(nfeatures=descriptors_amount)
+    # descriptors_amount = 500
+    # orb = cv2.ORB_create(nfeatures=descriptors_amount)
 
-    keypoints_img, descriptors_img = orb.detectAndCompute(img, None)
+    # keypoints_img_A, descriptors_img_A = orb.detectAndCompute(img_A, None)
+    # keypoints_img_B, descriptors_img_B = orb.detectAndCompute(img_B, None)
+    # keypoints_img_C, descriptors_img_C = orb.detectAndCompute(img_C, None)
+    # keypoints_img_D, descriptors_img_D = orb.detectAndCompute(img_D, None)
+    # keypoints_img_E, descriptors_img_E = orb.detectAndCompute(img_E, None)
 
-    img_s = cv2.drawKeypoints(img, keypoints_img, None)
-    cv2.imshow("Lion noisy with key points", img_s)
+    # img_s = cv2.drawKeypoints(img, keypoints_img, None)
+    # cv2.imshow("Lion noisy with key points", img_s)
     # cv2.waitKey(0)
 
-    print(f'Image contains {descriptors_amount} descriptors\n')
-    print(f'Default length of ORB descriptor = {len(descriptors_img[0])}')
+    # descriptors_img_bit_format_A = convert_32_descriptors_to_256_bit(descriptors_img_A)
+    # descriptors_img_bit_format_B = convert_32_descriptors_to_256_bit(descriptors_img_B)
+    # descriptors_img_bit_format_C = convert_32_descriptors_to_256_bit(descriptors_img_C)
+    # descriptors_img_bit_format_D = convert_32_descriptors_to_256_bit(descriptors_img_D)
+    # descriptors_img_bit_format_E = convert_32_descriptors_to_256_bit(descriptors_img_E)
+    #
+    # descriptors_list_A = \
+    #     [Descriptor(descriptor, False, index, "A") for index, descriptor in enumerate(descriptors_img_bit_format_A)]
+    # descriptors_list_B = \
+    #     [Descriptor(descriptor, False, index, "B") for index, descriptor in enumerate(descriptors_img_bit_format_B)]
+    # descriptors_list_C = \
+    #     [Descriptor(descriptor, False, index, "C") for index, descriptor in enumerate(descriptors_img_bit_format_C)]
+    # descriptors_list_D = \
+    #     [Descriptor(descriptor, False, index, "D") for index, descriptor in enumerate(descriptors_img_bit_format_D)]
+    # descriptors_list_E = \
+    #     [Descriptor(descriptor, False, index, "E") for index, descriptor in enumerate(descriptors_img_bit_format_E)]
+    #
+    # descriptors_combined_etalons = descriptors_list_A + descriptors_list_B + descriptors_list_C + descriptors_list_D + descriptors_list_E
 
-    descriptors_img_bit_format = convert_32_descriptors_to_256_bit(descriptors_img)
-    print(f'\nLength of converted to bit format ORB descriptor = {len(descriptors_img_bit_format[0])}')
-    print(f'Converted to bit format ORB descriptor looks like: {descriptors_img_bit_format[0]}')
+    descriptors_combined_etalons = []
+    for image_path, class_name in image_data:
+        descriptors_combined_etalons.extend(process_image(image_path, class_name))
 
-    descriptors_list = [Descriptor(descriptor, False, index) for index, descriptor in enumerate(descriptors_img_bit_format)]
-    # for descriptor in descriptors_list[:5]:
-    #     print("Descriptor:", descriptor.descriptor)
-    #     print("Marked:", descriptor.marked)
-    #     print("Index:", descriptor.index)
+    print(f'descriptors_combined_etalons len: {len(descriptors_combined_etalons)}')
 
-    for descriptor in descriptors_list:
-        descriptor.mark_closest_descriptors(descriptors_list)
+    class_counts = {class_name: 0 for _, class_name in image_data}
 
-    marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
-    print("Number of marked descriptors:", marked_count)
+    # Loop through each image
+    for image_path, class_name in image_data:
+        # Process the image and get descriptors
+        descriptors_list = process_image(image_path, class_name)
 
-    marked_indexes = [descriptor.index for descriptor in descriptors_list if descriptor.marked]
-    print("Collection of marked indexes:", marked_indexes)
+        # Iterate over descriptors of the image
+        for descriptor in descriptors_list:
+            find = descriptor.find_class_of_closest_descriptor_by_hamming_distance(descriptors_combined_etalons)
+            if find in class_counts:
+                class_counts[find] += 1
 
-    ################################
+        # for class_label, count in class_counts.items():
+        #     print(f'{class_label}: {count} / {len(descriptors_list)}')
 
-    print('-------------------------------------------')
+    # Print the counts for each class
+    for class_label, count in class_counts.items():
+        print(f'{class_label}: {count}')
 
-    unmarked_descriptors = [descriptor for descriptor in descriptors_list if not descriptor.marked]
+    # A = 0
+    # B = 0
+    # C = 0
+    # D = 0
+    # E = 0
+    #
+    # for i in range(len(descriptors_list_A)):
+    #
+    #     find = descriptors_list_A[i].find_class_of_closest_descriptor_by_hamming_distance(descriptors_combined_etalons)
+    #
+    #     if find == "A":
+    #         A = A + 1
+    #     elif find == "B":
+    #         B = B + 1
+    #     elif find == "C":
+    #         C = C + 1
+    #     elif find == "D":
+    #         D = D + 1
+    #     elif find == "E":
+    #         E = E + 1
+    #
+    # print(f'A: {A}; B: {B}; C: {C}; D: {D}; E: {E};')
 
-    print(f'Unmarked descriptors len: {len(unmarked_descriptors)}')
+    # find = descriptors_list_A[0].find_class_of_closest_descriptor_by_hamming_distance(descriptors_combined_etalons)
 
-    for descriptor in unmarked_descriptors:
-        descriptor.mark_closest_descriptors(unmarked_descriptors)
+    # print(find)
+    #------------------------------I level---------------------------------------#
 
-    marked_count = sum(1 for descriptor in unmarked_descriptors if descriptor.marked)
-    print("Number of marked descriptors:", marked_count)
 
-    marked_indexes = [descriptor.index for descriptor in unmarked_descriptors if descriptor.marked]
-    print("Collection of marked indexes:", marked_indexes)
+    # for descriptor in descriptors_list_A:
+    #     descriptor.mark_closest_descriptors(descriptors_list_A)
+    #
+    # marked_count_A = sum(1 for descriptor in descriptors_list_A if descriptor.marked)
+    # print("I рівень, кількість відмічених дескрипторів:", marked_count_A)
+    # print("I рівень, кількість дескрипторів що залишилась:", len(descriptors_list_A) - marked_count_A)
 
-    # print('-------------')
+    #------------------------------II level---------------------------------------#
 
-    # diff_count = sum(1 for i in range(len(descriptors_list[1].descriptor)) if descriptors_list[4].descriptor[i] != descriptors_list[14].descriptor[i])
-    # print("Количество отличающихся элементов:", diff_count)
+    # print('-----------------------------------------------------------------------------')
+    #
+    # unmarked_descriptors_A = [descriptor for descriptor in descriptors_list_A if not descriptor.marked]
+    #
+    # for descriptor in unmarked_descriptors_A:
+    #     descriptor.mark_closest_descriptors(unmarked_descriptors_A)
+    #
+    # marked_count = sum(1 for descriptor in unmarked_descriptors_A if descriptor.marked)
+    # print("II рівень, кількість відмічених дескрипторів:", marked_count)
+    # print("II рівень, кількість дескрипторів що залишилась:", len(unmarked_descriptors_A) - marked_count_A)
+
 
 
 

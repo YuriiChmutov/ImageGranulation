@@ -2,10 +2,11 @@ from scipy.spatial import distance
 
 
 class Descriptor:
-    def __init__(self, descriptor: list, marked: bool, index: int):
+    def __init__(self, descriptor: list, marked: bool, index: int, class_name: str):
         self.descriptor = descriptor
         self.marked = marked
         self.index = index
+        self.class_name = class_name
 
     def hamming_distance(self, other_descriptor):
         # print(f'{len(self.descriptor)} | {len(other_descriptor.descriptor)}')
@@ -13,8 +14,8 @@ class Descriptor:
 
     @staticmethod
     def get_threshold(descriptor_length):
-        # return descriptor_length * 0.375
-        return descriptor_length * 0.5
+        return descriptor_length * 0.375
+        # return descriptor_length * 0.5
 
     def mark_closest_descriptors(self, descriptors_list):
         threshold = self.get_threshold(len(self.descriptor))
@@ -53,3 +54,19 @@ class Descriptor:
         #     print(f'{closest_descriptor.index} was marked as closest')
         # print('-------------------------')
 
+    def find_class_of_closest_descriptor_by_hamming_distance(self, etalons):
+        # print(len(etalons))
+        min_distance: float = 257
+        closest_descriptor_class = 0
+        index_of_min_distance = 0
+        for i in range(0, len(etalons)):
+            # print(i)
+            current_distance = self.hamming_distance(etalons[i])
+            # print(f'{i}) Current distance: {current_distance}')
+            if min_distance >= current_distance >= 0.0:
+                closest_descriptor_class = etalons[i].class_name
+                index_of_min_distance = i
+                test = etalons[i]
+                min_distance = current_distance
+        # print(f'Closest for [{self.class_name}:{self.index}] is {closest_descriptor_class} and distance is {min_distance}')
+        return closest_descriptor_class
