@@ -49,6 +49,23 @@ def process_image(image_path, class_name, descriptors_amount=20):
     return descriptors_list
 
 
+def compare_descriptors(descriptors, combined_descriptors, class_counts):
+    # print(f'Comparing descriptors for image {image_path} with combined set...')
+    num_combined_descriptors = len(combined_descriptors)
+
+    for descriptor in descriptors:
+        closest_class = descriptor.find_class_of_closest_descriptor_by_hamming_distance(combined_descriptors)
+        class_counts[closest_class] += 1
+
+        # print(f'  Descriptor {descriptor.index} compared with {num_combined_descriptors} combined descriptors.')
+
+
+def print_class_counts(image_path, class_counts):
+    print(f'Image {image_path} class counts:')
+    for class_label, count in class_counts.items():
+        print(f'{class_label}: {count}')
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
 
@@ -60,122 +77,78 @@ if __name__ == '__main__':
         ('images/Brentford.jpg', 'E')
     ]
 
-    # img_A = cv2.imread('images/Liverpool.jpg')
-    # img_B = cv2.imread('images/Leicester.jpg')
-    # img_C = cv2.imread('images/BayernMunchen.jpg')
-    # img_D = cv2.imread('images/Eintracht.jpg')
-    # img_E = cv2.imread('images/Brentford.jpg')
-    # img_F = cv2.imread('images/ManchesterCity.jpg')
+    descriptors_by_image = {}
 
-    # cv2.imshow("Lion_simple", img)
-    # cv2.waitKey(0)
-
-    # descriptors_amount = 500
-    # orb = cv2.ORB_create(nfeatures=descriptors_amount)
-
-    # keypoints_img_A, descriptors_img_A = orb.detectAndCompute(img_A, None)
-    # keypoints_img_B, descriptors_img_B = orb.detectAndCompute(img_B, None)
-    # keypoints_img_C, descriptors_img_C = orb.detectAndCompute(img_C, None)
-    # keypoints_img_D, descriptors_img_D = orb.detectAndCompute(img_D, None)
-    # keypoints_img_E, descriptors_img_E = orb.detectAndCompute(img_E, None)
-
-    # img_s = cv2.drawKeypoints(img, keypoints_img, None)
-    # cv2.imshow("Lion noisy with key points", img_s)
-    # cv2.waitKey(0)
-
-    # descriptors_img_bit_format_A = convert_32_descriptors_to_256_bit(descriptors_img_A)
-    # descriptors_img_bit_format_B = convert_32_descriptors_to_256_bit(descriptors_img_B)
-    # descriptors_img_bit_format_C = convert_32_descriptors_to_256_bit(descriptors_img_C)
-    # descriptors_img_bit_format_D = convert_32_descriptors_to_256_bit(descriptors_img_D)
-    # descriptors_img_bit_format_E = convert_32_descriptors_to_256_bit(descriptors_img_E)
-    #
-    # descriptors_list_A = \
-    #     [Descriptor(descriptor, False, index, "A") for index, descriptor in enumerate(descriptors_img_bit_format_A)]
-    # descriptors_list_B = \
-    #     [Descriptor(descriptor, False, index, "B") for index, descriptor in enumerate(descriptors_img_bit_format_B)]
-    # descriptors_list_C = \
-    #     [Descriptor(descriptor, False, index, "C") for index, descriptor in enumerate(descriptors_img_bit_format_C)]
-    # descriptors_list_D = \
-    #     [Descriptor(descriptor, False, index, "D") for index, descriptor in enumerate(descriptors_img_bit_format_D)]
-    # descriptors_list_E = \
-    #     [Descriptor(descriptor, False, index, "E") for index, descriptor in enumerate(descriptors_img_bit_format_E)]
-    #
-    # descriptors_combined_etalons = descriptors_list_A + descriptors_list_B + descriptors_list_C + descriptors_list_D + descriptors_list_E
-
-    descriptors_combined_etalons = []
     for image_path, class_name in image_data:
-        descriptors_combined_etalons.extend(process_image(image_path, class_name))
+        descriptors_by_image[image_path] = process_image(image_path, class_name, descriptors_amount=500)
 
-    print(f'descriptors_combined_etalons len: {len(descriptors_combined_etalons)}')
 
-    class_counts = {class_name: 0 for _, class_name in image_data}
+    # # Combine descriptors from all images into a single list
+    # descriptors_combined_etalons = [descriptor for descriptors_list in descriptors_by_image.values() for descriptor in descriptors_list]
 
-    # Loop through each image
-    for image_path, class_name in image_data:
-        # Process the image and get descriptors
-        descriptors_list = process_image(image_path, class_name)
+    # # Initialize class counts
+    # class_counts_by_image = {image_path: {class_name: 0 for _, class_name in image_data} for image_path, _ in image_data}
 
-        # Iterate over descriptors of the image
-        for descriptor in descriptors_list:
-            find = descriptor.find_class_of_closest_descriptor_by_hamming_distance(descriptors_combined_etalons)
-            if find in class_counts:
-                class_counts[find] += 1
+    # for image_path, descriptors_list in descriptors_by_image.items():
+    #     print(f'Comparing descriptors for image {image_path} with combined set...')
+    #     compare_descriptors(descriptors_list, descriptors_combined_etalons, class_counts_by_image[image_path])
 
-        # for class_label, count in class_counts.items():
-        #     print(f'{class_label}: {count} / {len(descriptors_list)}')
+    # for image_path, class_counts in class_counts_by_image.items():
+    #     print_class_counts(image_path, class_counts)
 
-    # Print the counts for each class
-    for class_label, count in class_counts.items():
-        print(f'{class_label}: {count}')
-
-    # A = 0
-    # B = 0
-    # C = 0
-    # D = 0
-    # E = 0
-    #
-    # for i in range(len(descriptors_list_A)):
-    #
-    #     find = descriptors_list_A[i].find_class_of_closest_descriptor_by_hamming_distance(descriptors_combined_etalons)
-    #
-    #     if find == "A":
-    #         A = A + 1
-    #     elif find == "B":
-    #         B = B + 1
-    #     elif find == "C":
-    #         C = C + 1
-    #     elif find == "D":
-    #         D = D + 1
-    #     elif find == "E":
-    #         E = E + 1
-    #
-    # print(f'A: {A}; B: {B}; C: {C}; D: {D}; E: {E};')
-
-    # find = descriptors_list_A[0].find_class_of_closest_descriptor_by_hamming_distance(descriptors_combined_etalons)
-
-    # print(find)
     #------------------------------I level---------------------------------------#
 
+    unmarked_descriptors_by_image_first_level = {}
 
-    # for descriptor in descriptors_list_A:
-    #     descriptor.mark_closest_descriptors(descriptors_list_A)
-    #
-    # marked_count_A = sum(1 for descriptor in descriptors_list_A if descriptor.marked)
-    # print("I рівень, кількість відмічених дескрипторів:", marked_count_A)
-    # print("I рівень, кількість дескрипторів що залишилась:", len(descriptors_list_A) - marked_count_A)
+    for image_path, descriptors_list in descriptors_by_image.items():
+        for descriptor in descriptors_list:
+            descriptor.mark_closest_descriptors(descriptors_list)
+        
+        marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
+        print(f"Для изображения {image_path}:")
+        print("Количество отмеченных дескрипторов:", marked_count)
+        print("Количество дескрипторов, которые остались:", len(descriptors_list) - marked_count)
+
+        unmarked_descriptors_list = [descriptor for descriptor in descriptors_list if not descriptor.marked]
+        unmarked_descriptors_by_image_first_level[image_path] = unmarked_descriptors_list
+
+    for image_path, descriptors_list in unmarked_descriptors_by_image_first_level.items():
+        print(f"Для изображения {image_path}:")
+        print("Количество неотмеченных дескрипторов:", len(descriptors_list))
+
+    # descriptors_combined_etalons = [descriptor for descriptors_list in unmarked_descriptors_by_image_first_level.values() for descriptor in descriptors_list]
+
+    # class_counts_by_image_unmarked = {image_path: {class_name: 0 for _, class_name in image_data} for image_path, _ in image_data}
+
+    # for image_path, descriptors_list in descriptors_by_image.items():
+    #     print(f'\nComparing descriptors for image {image_path} ({len(descriptors_list)}) with combined set of unmarked descriptors... ({len(descriptors_combined_etalons)})')
+    #     compare_descriptors(descriptors_list, descriptors_combined_etalons, class_counts_by_image_unmarked[image_path])
+
+    # for image_path, class_counts in class_counts_by_image_unmarked.items():
+    #     print_class_counts(image_path, class_counts)
 
     #------------------------------II level---------------------------------------#
 
-    # print('-----------------------------------------------------------------------------')
-    #
-    # unmarked_descriptors_A = [descriptor for descriptor in descriptors_list_A if not descriptor.marked]
-    #
-    # for descriptor in unmarked_descriptors_A:
-    #     descriptor.mark_closest_descriptors(unmarked_descriptors_A)
-    #
-    # marked_count = sum(1 for descriptor in unmarked_descriptors_A if descriptor.marked)
-    # print("II рівень, кількість відмічених дескрипторів:", marked_count)
-    # print("II рівень, кількість дескрипторів що залишилась:", len(unmarked_descriptors_A) - marked_count_A)
+    print('---------------------------------II level--------------------------------------------')
+
+    unmarked_descriptors_by_image_second_level = {}
+
+    for image_path, descriptors_list in unmarked_descriptors_by_image_first_level.items():
+        for descriptor in descriptors_list:
+            descriptor.mark_closest_descriptors(descriptors_list)
+        
+        marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
+        print(f"Для изображения {image_path}:")
+        print("Количество отмеченных дескрипторов:", marked_count)
+        print("Количество дескрипторов, которые остались:", len(descriptors_list) - marked_count)
+
+        unmarked_descriptors_list = [descriptor for descriptor in descriptors_list if not descriptor.marked]
+        unmarked_descriptors_by_image_first_level[image_path] = unmarked_descriptors_list
+
+    for image_path, descriptors_list in unmarked_descriptors_by_image_second_level.items():
+        print(f"Для изображения {image_path}:")
+        print("Количество неотмеченных дескрипторов:", len(descriptors_list))
+
 
 
 

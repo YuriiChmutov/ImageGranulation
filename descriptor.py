@@ -59,6 +59,7 @@ class Descriptor:
         min_distance: float = 257
         closest_descriptor_class = 0
         index_of_min_distance = 0
+        image_descriptor_index = 0
         for i in range(0, len(etalons)):
             # print(i)
             current_distance = self.hamming_distance(etalons[i])
@@ -66,7 +67,8 @@ class Descriptor:
             if min_distance >= current_distance >= 0.0:
                 closest_descriptor_class = etalons[i].class_name
                 index_of_min_distance = i
+                image_descriptor_index = etalons[i].index
                 test = etalons[i]
                 min_distance = current_distance
-        # print(f'Closest for [{self.class_name}:{self.index}] is {closest_descriptor_class} and distance is {min_distance}')
+        print(f'Closest for [{self.class_name}:{self.index}] is [{closest_descriptor_class}:{image_descriptor_index}] ({index_of_min_distance}) and distance is {min_distance}')
         return closest_descriptor_class
