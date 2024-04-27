@@ -72,8 +72,47 @@ def print_class_counts(image_path, class_counts):
         print(f'{class_label}: {count}')
 
 
+def process_level(descriptors_by_image, image_data, descriptors_combined_etalons=None):
+    unmarked_descriptors_by_image = {}
+    class_counts_by_image_unmarked = {image_path: {class_name: 0 for _, class_name in image_data} for image_path, _ in image_data}
+
+    for image_path, descriptors_list in descriptors_by_image.items():
+        for descriptor in descriptors_list:
+            descriptor.mark_closest_descriptors(descriptors_list)
+
+        marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
+        print(f"Для изображения {image_path}:")
+        print("Количество отмеченных дескрипторов:", marked_count)
+        print("Количество дескрипторов, которые остались:", len(descriptors_list) - marked_count)
+        print()
+
+        unmarked_descriptors_list = [descriptor for descriptor in descriptors_list if not descriptor.marked]
+        unmarked_descriptors_by_image[image_path] = unmarked_descriptors_list
+
+    for image_path, descriptors_list in unmarked_descriptors_by_image.items():
+        print(f"Для изображения {image_path}:")
+        print("Количество неотмеченных дескрипторов:", len(descriptors_list))
+        print()
+
+    if descriptors_combined_etalons is None:
+        descriptors_combined_etalons = [descriptor for descriptors_list in unmarked_descriptors_by_image.values() for descriptor in descriptors_list]
+
+    for image_path, descriptors_list in descriptors_by_image.items():
+        print(f'\nComparing descriptors for image {image_path} ({len(descriptors_list)}) with combined set of unmarked descriptors... ({len(descriptors_combined_etalons)})')
+        compare_descriptors(descriptors_list, descriptors_combined_etalons, class_counts_by_image_unmarked[image_path])
+
+    for image_path, class_counts in class_counts_by_image_unmarked.items():
+        print_class_counts(image_path, class_counts)
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+
+    input_images = [
+        ('images/Lion', 'Lion'),
+        ('images/ManchesterCity.jpg', 'ManCity'),
+        ('images/Snake.jpg', ''),
+    ]
 
     image_data = [
         ('images/Liverpool.jpg', 'A'),
@@ -88,11 +127,8 @@ if __name__ == '__main__':
     for image_path, class_name in image_data:
         descriptors_by_image[image_path] = process_image(image_path, class_name, descriptors_amount=500)
 
-
-    # Combine descriptors from all images into a single list
     # descriptors_combined_etalons = [descriptor for descriptors_list in descriptors_by_image.values() for descriptor in descriptors_list]
 
-    # # Initialize class counts
     # class_counts_by_image = {image_path: {class_name: 0 for _, class_name in image_data} for image_path, _ in image_data}
 
     # for image_path, descriptors_list in descriptors_by_image.items():
@@ -103,176 +139,22 @@ if __name__ == '__main__':
     # for image_path, class_counts in class_counts_by_image.items():
     #     print_class_counts(image_path, class_counts)
 
-    #------------------------------I level---------------------------------------#
-
-    print('---------------------------------I level--------------------------------------------')
-
-    unmarked_descriptors_by_image_first_level = {}
-
-    for image_path, descriptors_list in descriptors_by_image.items():
-        for descriptor in descriptors_list:
-            descriptor.mark_closest_descriptors(descriptors_list)
-        
-        marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
-        print(f"Для изображения {image_path}:")
-        print("Количество отмеченных дескрипторов:", marked_count)
-        print("Количество дескрипторов, которые остались:", len(descriptors_list) - marked_count)
-        print()
-
-        unmarked_descriptors_list = [descriptor for descriptor in descriptors_list if not descriptor.marked]
-        unmarked_descriptors_by_image_first_level[image_path] = unmarked_descriptors_list
-
-    for image_path, descriptors_list in unmarked_descriptors_by_image_first_level.items():
-        print(f"Для изображения {image_path}:")
-        print("Количество неотмеченных дескрипторов:", len(descriptors_list))
-        print()
-
-    descriptors_combined_etalons = [descriptor for descriptors_list in unmarked_descriptors_by_image_first_level.values() for descriptor in descriptors_list]
-
-    class_counts_by_image_unmarked = {image_path: {class_name: 0 for _, class_name in image_data} for image_path, _ in image_data}
-
-    for image_path, descriptors_list in descriptors_by_image.items():
-        print(f'\nComparing descriptors for image {image_path} ({len(descriptors_list)}) with combined set of unmarked descriptors... ({len(descriptors_combined_etalons)})')
-        compare_descriptors(descriptors_list, descriptors_combined_etalons, class_counts_by_image_unmarked[image_path])
-
-    for image_path, class_counts in class_counts_by_image_unmarked.items():
-        print_class_counts(image_path, class_counts)
-
-    #------------------------------II level---------------------------------------#
-
-    print('---------------------------------II level--------------------------------------------')
-
-    unmarked_descriptors_by_image_second_level = {}
-
-    for image_path, descriptors_list in unmarked_descriptors_by_image_first_level.items():
-        for descriptor in descriptors_list:
-            descriptor.mark_closest_descriptors(descriptors_list)
-        
-        marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
-        print(f"Для изображения {image_path}:")
-        print("Количество отмеченных дескрипторов:", marked_count)
-        print("Количество дескрипторов, которые остались:", len(descriptors_list) - marked_count)
-
-        unmarked_descriptors_list = [descriptor for descriptor in descriptors_list if not descriptor.marked]
-        unmarked_descriptors_by_image_second_level[image_path] = unmarked_descriptors_list
-
-    for image_path, descriptors_list in unmarked_descriptors_by_image_second_level.items():
-        print(f"Для изображения {image_path}:")
-        print("Количество неотмеченных дескрипторов:", len(descriptors_list))
-
-    # descriptors_combined_etalons = [descriptor for descriptors_list in unmarked_descriptors_by_image_second_level.values() for descriptor in descriptors_list]
-
-    # class_counts_by_image_unmarked = {image_path: {class_name: 0 for _, class_name in image_data} for image_path, _ in image_data}
-
-    # for image_path, descriptors_list in descriptors_by_image.items():
-    #     print(f'\nComparing descriptors for image {image_path} ({len(descriptors_list)}) with combined set of unmarked descriptors... ({len(descriptors_combined_etalons)})')
-    #     compare_descriptors(descriptors_list, descriptors_combined_etalons, class_counts_by_image_unmarked[image_path])
-
-    # for image_path, class_counts in class_counts_by_image_unmarked.items():
-    #     print_class_counts(image_path, class_counts)
 
 
-    
-    #------------------------------III level---------------------------------------#
+    # Define the number of levels
+    num_levels = 3
 
-    print('---------------------------------III level--------------------------------------------')
+    for level in range(1, num_levels + 1):
+        print(f'--------------------------------- Level {level} --------------------------------------------')
+        if level == 1:
+            process_level(descriptors_by_image, image_data)
+        else:
+            unmarked_descriptors_by_image = {}
+            for image_path, descriptors_list in descriptors_by_image.items():
+                unmarked_descriptors_list = [descriptor for descriptor in descriptors_list if not descriptor.marked]
+                unmarked_descriptors_by_image[image_path] = unmarked_descriptors_list
 
-    unmarked_descriptors_by_image_third_level = {}
-
-    for image_path, descriptors_list in unmarked_descriptors_by_image_second_level.items():
-        for descriptor in descriptors_list:
-            descriptor.mark_closest_descriptors(descriptors_list)
-        
-        marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
-        print(f"Для изображения {image_path}:")
-        print("Количество отмеченных дескрипторов:", marked_count)
-        print("Количество дескрипторов, которые остались:", len(descriptors_list) - marked_count)
-
-        unmarked_descriptors_list = [descriptor for descriptor in descriptors_list if not descriptor.marked]
-        unmarked_descriptors_by_image_third_level[image_path] = unmarked_descriptors_list
-
-    for image_path, descriptors_list in unmarked_descriptors_by_image_third_level.items():
-        print(f"Для изображения {image_path}:")
-        print("Количество неотмеченных дескрипторов:", len(descriptors_list))
-
-    # descriptors_combined_etalons = [descriptor for descriptors_list in unmarked_descriptors_by_image_third_level.values() for descriptor in descriptors_list]
-
-    # class_counts_by_image_unmarked = {image_path: {class_name: 0 for _, class_name in image_data} for image_path, _ in image_data}
-
-    # for image_path, descriptors_list in descriptors_by_image.items():
-    #     print(f'\nComparing descriptors for image {image_path} ({len(descriptors_list)}) with combined set of unmarked descriptors... ({len(descriptors_combined_etalons)})')
-    #     compare_descriptors(descriptors_list, descriptors_combined_etalons, class_counts_by_image_unmarked[image_path])
-
-    # for image_path, class_counts in class_counts_by_image_unmarked.items():
-    #     print_class_counts(image_path, class_counts)
-
-
-    #------------------------------IV level---------------------------------------#
-
-    print('---------------------------------IV level--------------------------------------------')
-
-    unmarked_descriptors_by_image_fourth_level = {}
-
-    for image_path, descriptors_list in unmarked_descriptors_by_image_third_level.items():
-        for descriptor in descriptors_list:
-            descriptor.mark_closest_descriptors(descriptors_list)
-        
-        marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
-        print(f"Для изображения {image_path}:")
-        print("Количество отмеченных дескрипторов:", marked_count)
-        print("Количество дескрипторов, которые остались:", len(descriptors_list) - marked_count)
-
-        unmarked_descriptors_list = [descriptor for descriptor in descriptors_list if not descriptor.marked]
-        unmarked_descriptors_by_image_fourth_level[image_path] = unmarked_descriptors_list
-
-    for image_path, descriptors_list in unmarked_descriptors_by_image_fourth_level.items():
-        print(f"Для изображения {image_path}:")
-        print("Количество неотмеченных дескрипторов:", len(descriptors_list))
-
-    # descriptors_combined_etalons = [descriptor for descriptors_list in unmarked_descriptors_by_image_fourth_level.values() for descriptor in descriptors_list]
-
-    # class_counts_by_image_unmarked = {image_path: {class_name: 0 for _, class_name in image_data} for image_path, _ in image_data}
-
-    # for image_path, descriptors_list in descriptors_by_image.items():
-    #     print(f'\nComparing descriptors for image {image_path} ({len(descriptors_list)}) with combined set of unmarked descriptors... ({len(descriptors_combined_etalons)})')
-    #     compare_descriptors(descriptors_list, descriptors_combined_etalons, class_counts_by_image_unmarked[image_path])
-
-    # for image_path, class_counts in class_counts_by_image_unmarked.items():
-    #     print_class_counts(image_path, class_counts)
-
-
-    #------------------------------V level---------------------------------------#
-
-    print('---------------------------------V level--------------------------------------------')
-
-    unmarked_descriptors_by_image_five_level = {}
-
-    for image_path, descriptors_list in unmarked_descriptors_by_image_fourth_level.items():
-        for descriptor in descriptors_list:
-            descriptor.mark_closest_descriptors(descriptors_list)
-        
-        marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
-        print(f"Для изображения {image_path}:")
-        print("Количество отмеченных дескрипторов:", marked_count)
-        print("Количество дескрипторов, которые остались:", len(descriptors_list) - marked_count)
-
-        unmarked_descriptors_list = [descriptor for descriptor in descriptors_list if not descriptor.marked]
-        unmarked_descriptors_by_image_five_level[image_path] = unmarked_descriptors_list
-
-    for image_path, descriptors_list in unmarked_descriptors_by_image_five_level.items():
-        print(f"Для изображения {image_path}:")
-        print("Количество неотмеченных дескрипторов:", len(descriptors_list))
-
-    # descriptors_combined_etalons = [descriptor for descriptors_list in unmarked_descriptors_by_image_five_level.values() for descriptor in descriptors_list]
-
-    # class_counts_by_image_unmarked = {image_path: {class_name: 0 for _, class_name in image_data} for image_path, _ in image_data}
-
-    # for image_path, descriptors_list in descriptors_by_image.items():
-    #     print(f'\nComparing descriptors for image {image_path} ({len(descriptors_list)}) with combined set of unmarked descriptors... ({len(descriptors_combined_etalons)})')
-    #     compare_descriptors(descriptors_list, descriptors_combined_etalons, class_counts_by_image_unmarked[image_path])
-
-    # for image_path, class_counts in class_counts_by_image_unmarked.items():
-    #     print_class_counts(image_path, class_counts)
+            process_level(unmarked_descriptors_by_image, image_data)
 
 
 
