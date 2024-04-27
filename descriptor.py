@@ -70,5 +70,5 @@ class Descriptor:
                 image_descriptor_index = etalons[i].index
                 test = etalons[i]
                 min_distance = current_distance
-        print(f'Closest for [{self.class_name}:{self.index}] is [{closest_descriptor_class}:{image_descriptor_index}] ({index_of_min_distance}) and distance is {min_distance}')
+        # print(f'Closest for [{self.class_name}:{self.index}] is [{closest_descriptor_class}:{image_descriptor_index}] ({index_of_min_distance}) and distance is {min_distance}')
         return closest_descriptor_class
