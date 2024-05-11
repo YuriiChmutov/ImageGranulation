@@ -76,14 +76,41 @@ def print_class_counts(image_path, class_counts):
 if __name__ == '__main__':
 
     image_input = [
-        ('images/Lion.jpg', 'input_A'),
-        ('images/ManchesterCity.jpg', 'input_B'),
-        ('images/Rangers.jpg', 'input_C')
-        # ('images/Liverpool.jpg', 'A'),
-        # ('images/Leicester.jpg', 'B'),
-        # ('images/BayernMunchen.jpg', 'C'),
-        # ('images/Eintracht.jpg', 'D'),
-        # ('images/Brentford.jpg', 'E')
+        # ('images/decreased_by_10_percent/Lion.jpg', 'input_A'),
+        # ('images/decreased_by_10_percent/ManchesterCity.jpg', 'input_B'),
+        # ('images/decreased_by_10_percent/Rangers.jpg', 'input_C')
+        # ('images/decreased_by_10_percent/Liverpool.jpg', 'A'),
+        # ('images/decreased_by_10_percent/Leicester.jpg', 'B'),
+        # ('images/decreased_by_10_percent/BayernMunchen.jpg', 'C'),
+        # ('images/decreased_by_10_percent/Eintracht.jpg', 'D'),
+        # ('images/decreased_by_10_percent/Brentford.jpg', 'E')
+
+        # ('images/increased_by_10_percent/Lion.jpg', 'input_A'),
+        # ('images/increased_by_10_percent/ManchesterCity.jpg', 'input_B'),
+        # ('images/increased_by_10_percent/Rangers.jpg', 'input_C')
+        # ('images/increased_by_10_percent/Liverpool.jpg', 'A'),
+        # ('images/increased_by_10_percent/Leicester.jpg', 'B'),
+        # ('images/increased_by_10_percent/BayernMunchen.jpg', 'C'),
+        # ('images/increased_by_10_percent/Eintracht.jpg', 'D'),
+        # ('images/increased_by_10_percent/Brentford.jpg', 'E')
+
+        # ('images/rotated_left_30_degrees/Lion.jpg', 'input_A'),
+        # ('images/rotated_left_30_degrees/ManchesterCity.jpg', 'input_B'),
+        # ('images/rotated_left_30_degrees/Rangers.jpg', 'input_C')
+        # ('images/rotated_left_30_degrees/Liverpool.jpg', 'A'),
+        # ('images/rotated_left_30_degrees/Leicester.jpg', 'B'),
+        # ('images/rotated_left_30_degrees/BayernMunchen.jpg', 'C'),
+        # ('images/rotated_left_30_degrees/Eintracht.jpg', 'D'),
+        # ('images/rotated_left_30_degrees/Brentford.jpg', 'E')
+
+        # ('images/rotated_right_30_degrees/Lion.jpg', 'input_A'),
+        # ('images/rotated_right_30_degrees/ManchesterCity.jpg', 'input_B'),
+        # ('images/rotated_right_30_degrees/Rangers.jpg', 'input_C')
+        ('images/rotated_right_30_degrees/Liverpool.jpg', 'A'),
+        ('images/rotated_right_30_degrees/Leicester.jpg', 'B'),
+        ('images/rotated_right_30_degrees/BayernMunchen.jpg', 'C'),
+        ('images/rotated_right_30_degrees/Eintracht.jpg', 'D'),
+        ('images/rotated_right_30_degrees/Brentford.jpg', 'E')
     ]
 
     image_etalons = [ #image_data
