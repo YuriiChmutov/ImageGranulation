@@ -13,12 +13,13 @@ class Descriptor:
         return float(len(self.descriptor)) * distance.hamming(self.descriptor, other_descriptor.descriptor)
 
     @staticmethod
-    def get_threshold(descriptor_length):
-        return descriptor_length * 0.375
+    def get_threshold(descriptor_length, percent):
+        return descriptor_length * percent
+        # return descriptor_length * 0.375
         # return descriptor_length * 0.5
 
-    def mark_closest_descriptors(self, descriptors_list):
-        threshold = self.get_threshold(len(self.descriptor))
+    def mark_closest_descriptors(self, descriptors_list, percent):
+        threshold = self.get_threshold(len(self.descriptor), percent)
         min_distance = float('inf')
         min_distance_bigger_then_threshold = float('inf')
         closest_descriptor = None

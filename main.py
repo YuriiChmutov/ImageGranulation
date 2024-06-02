@@ -75,15 +75,21 @@ def print_class_counts(image_path, class_counts):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
 
+    first_level_granulation_percent = 0.375
+    second_level_granulation_percent = 0.375
+    third_level_granulation_percent = 0.375
+    fourth_level_granulation_percent = 0.375
+    fifth_level_granulation_percent = 0.375
+
     image_input = [
-        # ('images/decreased_by_10_percent/Lion.jpg', 'input_A'),
-        # ('images/decreased_by_10_percent/ManchesterCity.jpg', 'input_B'),
-        # ('images/decreased_by_10_percent/Rangers.jpg', 'input_C')
-        # ('images/decreased_by_10_percent/Liverpool.jpg', 'A'),
-        # ('images/decreased_by_10_percent/Leicester.jpg', 'B'),
-        # ('images/decreased_by_10_percent/BayernMunchen.jpg', 'C'),
-        # ('images/decreased_by_10_percent/Eintracht.jpg', 'D'),
-        # ('images/decreased_by_10_percent/Brentford.jpg', 'E')
+        ('images/decreased_by_10_percent/Lion.jpg', 'input_A'),
+        ('images/decreased_by_10_percent/ManchesterCity.jpg', 'input_B'),
+        ('images/decreased_by_10_percent/Rangers.jpg', 'input_C')
+        ('images/decreased_by_10_percent/Liverpool.jpg', 'A'),
+        ('images/decreased_by_10_percent/Leicester.jpg', 'B'),
+        ('images/decreased_by_10_percent/BayernMunchen.jpg', 'C'),
+        ('images/decreased_by_10_percent/Eintracht.jpg', 'D'),
+        ('images/decreased_by_10_percent/Brentford.jpg', 'E')
 
         # ('images/increased_by_10_percent/Lion.jpg', 'input_A'),
         # ('images/increased_by_10_percent/ManchesterCity.jpg', 'input_B'),
@@ -144,11 +150,11 @@ if __name__ == '__main__':
         # ('images/increased_by_10_percent_rotated_right_30_degrees/Lion.jpg', 'input_A'),
         # ('images/increased_by_10_percent_rotated_right_30_degrees/ManchesterCity.jpg', 'input_B'),
         # ('images/increased_by_10_percent_rotated_right_30_degrees/Rangers.jpg', 'input_C')
-        ('images/increased_by_10_percent_rotated_right_30_degrees/Liverpool.jpg', 'A'),
-        ('images/increased_by_10_percent_rotated_right_30_degrees/Leicester.jpg', 'B'),
-        ('images/increased_by_10_percent_rotated_right_30_degrees/BayernMunchen.jpg', 'C'),
-        ('images/increased_by_10_percent_rotated_right_30_degrees/Eintracht.jpg', 'D'),
-        ('images/increased_by_10_percent_rotated_right_30_degrees/Brentford.jpg', 'E')
+        # ('images/increased_by_10_percent_rotated_right_30_degrees/Liverpool.jpg', 'A'),
+        # ('images/increased_by_10_percent_rotated_right_30_degrees/Leicester.jpg', 'B'),
+        # ('images/increased_by_10_percent_rotated_right_30_degrees/BayernMunchen.jpg', 'C'),
+        # ('images/increased_by_10_percent_rotated_right_30_degrees/Eintracht.jpg', 'D'),
+        # ('images/increased_by_10_percent_rotated_right_30_degrees/Brentford.jpg', 'E')
     ]
 
     image_etalons = [ #image_data
@@ -194,7 +200,7 @@ if __name__ == '__main__':
 
     for image_path, descriptors_list in descriptors_by_image_etalons.items():
         for descriptor in descriptors_list:
-            descriptor.mark_closest_descriptors(descriptors_list)
+            descriptor.mark_closest_descriptors(descriptors_list, first_level_granulation_percent)
         
         marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
         print(f"Для изображения {image_path}:")
@@ -229,7 +235,7 @@ if __name__ == '__main__':
 
     for image_path, descriptors_list in unmarked_descriptors_by_image_first_level.items():
         for descriptor in descriptors_list:
-            descriptor.mark_closest_descriptors(descriptors_list)
+            descriptor.mark_closest_descriptors(descriptors_list, second_level_granulation_percent)
         
         marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
         print(f"Для изображения {image_path}:")
@@ -263,7 +269,7 @@ if __name__ == '__main__':
 
     for image_path, descriptors_list in unmarked_descriptors_by_image_second_level.items():
         for descriptor in descriptors_list:
-            descriptor.mark_closest_descriptors(descriptors_list)
+            descriptor.mark_closest_descriptors(descriptors_list, third_level_granulation_percent)
         
         marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
         print(f"Для изображения {image_path}:")
@@ -297,7 +303,7 @@ if __name__ == '__main__':
 
     for image_path, descriptors_list in unmarked_descriptors_by_image_third_level.items():
         for descriptor in descriptors_list:
-            descriptor.mark_closest_descriptors(descriptors_list)
+            descriptor.mark_closest_descriptors(descriptors_list, fourth_level_granulation_percent)
         
         marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
         print(f"Для изображения {image_path}:")
@@ -331,7 +337,7 @@ if __name__ == '__main__':
 
     for image_path, descriptors_list in unmarked_descriptors_by_image_fourth_level.items():
         for descriptor in descriptors_list:
-            descriptor.mark_closest_descriptors(descriptors_list)
+            descriptor.mark_closest_descriptors(descriptors_list, fifth_level_granulation_percent)
         
         marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
         # print(f"Для изображения {image_path}:")
