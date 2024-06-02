@@ -61,9 +61,9 @@ def compare_descriptors(descriptors, combined_descriptors, class_counts):
         # print(f'  Descriptor {descriptor.index} compared with {num_combined_descriptors} combined descriptors.')
     
     print()
-    print('Class counts:')
-    print(class_counts)
-    print()
+    # print('Class counts:')
+    # print(class_counts)
+    # print()
 
 
 def print_class_counts(image_path, class_counts):
@@ -106,11 +106,49 @@ if __name__ == '__main__':
         # ('images/rotated_right_30_degrees/Lion.jpg', 'input_A'),
         # ('images/rotated_right_30_degrees/ManchesterCity.jpg', 'input_B'),
         # ('images/rotated_right_30_degrees/Rangers.jpg', 'input_C')
-        ('images/rotated_right_30_degrees/Liverpool.jpg', 'A'),
-        ('images/rotated_right_30_degrees/Leicester.jpg', 'B'),
-        ('images/rotated_right_30_degrees/BayernMunchen.jpg', 'C'),
-        ('images/rotated_right_30_degrees/Eintracht.jpg', 'D'),
-        ('images/rotated_right_30_degrees/Brentford.jpg', 'E')
+        # ('images/rotated_right_30_degrees/Liverpool.jpg', 'A'),
+        # ('images/rotated_right_30_degrees/Leicester.jpg', 'B'),
+        # ('images/rotated_right_30_degrees/BayernMunchen.jpg', 'C'),
+        # ('images/rotated_right_30_degrees/Eintracht.jpg', 'D'),
+        # ('images/rotated_right_30_degrees/Brentford.jpg', 'E')
+
+        # ('images/decreased_by_10_percent_rotated_left_30_degrees/Lion.jpg', 'input_A'),
+        # ('images/decreased_by_10_percent_rotated_left_30_degrees/ManchesterCity.jpg', 'input_B'),
+        # ('images/decreased_by_10_percent_rotated_left_30_degrees/Rangers.jpg', 'input_C')
+        # ('images/decreased_by_10_percent_rotated_left_30_degrees/Liverpool.jpg', 'A'),
+        # ('images/decreased_by_10_percent_rotated_left_30_degrees/Leicester.jpg', 'B'),
+        # ('images/decreased_by_10_percent_rotated_left_30_degrees/BayernMunchen.jpg', 'C'),
+        # ('images/decreased_by_10_percent_rotated_left_30_degrees/Eintracht.jpg', 'D'),
+        # ('images/decreased_by_10_percent_rotated_left_30_degrees/Brentford.jpg', 'E')
+
+        # ('images/decreased_by_10_percent_rotated_right_30_degrees/Lion.jpg', 'input_A'),
+        # ('images/decreased_by_10_percent_rotated_right_30_degrees/ManchesterCity.jpg', 'input_B'),
+        # ('images/decreased_by_10_percent_rotated_right_30_degrees/Rangers.jpg', 'input_C')
+        # ('images/decreased_by_10_percent_rotated_right_30_degrees/Liverpool.jpg', 'A'),
+        # ('images/decreased_by_10_percent_rotated_right_30_degrees/Leicester.jpg', 'B'),
+        # ('images/decreased_by_10_percent_rotated_right_30_degrees/BayernMunchen.jpg', 'C'),
+        # ('images/decreased_by_10_percent_rotated_right_30_degrees/Eintracht.jpg', 'D'),
+        # ('images/decreased_by_10_percent_rotated_right_30_degrees/Brentford.jpg', 'E')
+
+        # done
+
+        # ('images/increased_by_10_percent_rotated_left_30_degrees/Lion.jpg', 'input_A'),
+        # ('images/increased_by_10_percent_rotated_left_30_degrees/ManchesterCity.jpg', 'input_B'),
+        # ('images/increased_by_10_percent_rotated_left_30_degrees/Rangers.jpg', 'input_C')
+        # ('images/increased_by_10_percent_rotated_left_30_degrees/Liverpool.jpg', 'A'),
+        # ('images/increased_by_10_percent_rotated_left_30_degrees/Leicester.jpg', 'B'),
+        # ('images/increased_by_10_percent_rotated_left_30_degrees/BayernMunchen.jpg', 'C'),
+        # ('images/increased_by_10_percent_rotated_left_30_degrees/Eintracht.jpg', 'D'),
+        # ('images/increased_by_10_percent_rotated_left_30_degrees/Brentford.jpg', 'E')
+
+        # ('images/increased_by_10_percent_rotated_right_30_degrees/Lion.jpg', 'input_A'),
+        # ('images/increased_by_10_percent_rotated_right_30_degrees/ManchesterCity.jpg', 'input_B'),
+        # ('images/increased_by_10_percent_rotated_right_30_degrees/Rangers.jpg', 'input_C')
+        ('images/increased_by_10_percent_rotated_right_30_degrees/Liverpool.jpg', 'A'),
+        ('images/increased_by_10_percent_rotated_right_30_degrees/Leicester.jpg', 'B'),
+        ('images/increased_by_10_percent_rotated_right_30_degrees/BayernMunchen.jpg', 'C'),
+        ('images/increased_by_10_percent_rotated_right_30_degrees/Eintracht.jpg', 'D'),
+        ('images/increased_by_10_percent_rotated_right_30_degrees/Brentford.jpg', 'E')
     ]
 
     image_etalons = [ #image_data
@@ -296,16 +334,16 @@ if __name__ == '__main__':
             descriptor.mark_closest_descriptors(descriptors_list)
         
         marked_count = sum(1 for descriptor in descriptors_list if descriptor.marked)
-        print(f"Для изображения {image_path}:")
-        print("Количество отмеченных дескрипторов:", marked_count)
-        print("Количество дескрипторов, которые остались:", len(descriptors_list) - marked_count)
+        # print(f"Для изображения {image_path}:")
+        # print("Количество отмеченных дескрипторов:", marked_count)
+        # print("Количество дескрипторов, которые остались:", len(descriptors_list) - marked_count)
 
         unmarked_descriptors_list = [descriptor for descriptor in descriptors_list if not descriptor.marked]
         unmarked_descriptors_by_image_five_level[image_path] = unmarked_descriptors_list
 
-    for image_path, descriptors_list in unmarked_descriptors_by_image_five_level.items():
-        print(f"Для изображения {image_path}:")
-        print("Количество неотмеченных дескрипторов:", len(descriptors_list))
+    # for image_path, descriptors_list in unmarked_descriptors_by_image_five_level.items():
+        # print(f"Для изображения {image_path}:")
+        # print("Количество неотмеченных дескрипторов:", len(descriptors_list))
 
     descriptors_combined_etalons = [descriptor for descriptors_list in unmarked_descriptors_by_image_five_level.values() for descriptor in descriptors_list]
 
